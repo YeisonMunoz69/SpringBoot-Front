@@ -7,12 +7,12 @@
   <input type="text" [(ngModel)]="apellido" id="apellido" />
 
   <label for="pais">País:</label>
-  <select [(ngModel)]="pais">
+  <select [(ngModel)]="selectedPaisId" id="pais">
     <option *ngFor="let pais of paises" [value]="pais.id">{{ pais.nombre }}</option>
   </select>
 
   <label for="estado">Estado:</label>
-  <select [(ngModel)]="estado">
+  <select [(ngModel)]="selectedEstadoId" id="estado">
     <option *ngFor="let estado of estados" [value]="estado.id">{{ estado.nombre }}</option>
   </select>
 
@@ -26,12 +26,9 @@
 
 <ul *ngIf="personas.length > 0">
   <li *ngFor="let persona of personas">
-    {{ persona?.nombre || 'Nombre no disponible' }} {{ persona?.apellido || '' }} 
-    - {{ persona?.pais?.nombre || '' }} 
-    - {{ persona?.estado?.nombre || '' }}
+    {{ persona.nombre }} {{ persona.apellido }} - {{ persona.pais.nombre }} - {{ persona.estado.nombre }}
     <button (click)="eliminarPersona(persona.id)">Eliminar</button>
   </li>
 </ul>
-
 
 <p *ngIf="personas.length === 0">No hay personas en la lista.</p>

@@ -17,8 +17,8 @@ import { forkJoin } from 'rxjs';
 export class PersonaComponent implements OnInit {
   nombre: string = '';
   apellido: string = '';
-  pais: string = '';
-  estado: string = '';
+  selectedPaisId: string = '';  // Variable para el ID del país seleccionado
+  selectedEstadoId: string = '';  // Variable para el ID del estado seleccionado
   personas: any[] = []; // Datos para ngFor
   paises: any[] = []; // Lista de países
   estados: any[] = []; // Lista de estados
@@ -30,8 +30,12 @@ export class PersonaComponent implements OnInit {
     const nuevaPersona = {
       nombre: this.nombre,
       apellido: this.apellido,
-      pais: this.pais,
-      estado: this.estado
+      pais: {
+        id: this.selectedPaisId  // El ID del país seleccionado
+      },
+      estado: {
+        id: this.selectedEstadoId  // El ID del estado seleccionado
+      }
     };
 
     this.personaService.crearPersona(nuevaPersona).subscribe((persona) => {
@@ -78,7 +82,7 @@ export class PersonaComponent implements OnInit {
   resetForm() {
     this.nombre = '';
     this.apellido = '';
-    this.pais = '';
-    this.estado = '';
+    this.selectedPaisId = '';
+    this.selectedEstadoId = '';
   }
 }

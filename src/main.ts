@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'estados', component: EstadosComponent },
   { path: 'paises', component: PaisesComponent },
   { path: 'personas', component: PersonaComponent },
-  { path: '', redirectTo: '/personas', pathMatch: 'full' }  // Ruta por defecto
+  { path: '', redirectTo: '/paises', pathMatch: 'full' }  // Ruta por defecto
 ];
 
 bootstrapApplication(AppComponent, {
