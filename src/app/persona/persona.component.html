@@ -1,0 +1,31 @@
+<h2>Crear Nueva Persona</h2>
+<form (ngSubmit)="crearPersona()">
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" [(ngModel)]="nuevaPersona.nombre" name="nombre" required>
+
+  <label for="apellido">Apellido:</label>
+  <input type="text" id="apellido" [(ngModel)]="nuevaPersona.apellido" name="apellido" required>
+
+  <!-- Select para País -->
+  <label for="pais">País:</label>
+  <select id="pais" [(ngModel)]="nuevaPersona.paisId" name="paisId" required>
+    <option *ngFor="let pais of paises" [value]="pais.id">{{ pais.nombre }}</option>
+  </select>
+
+  <!-- Select para Estado -->
+  <label for="estado">Estado:</label>
+  <select id="estado" [(ngModel)]="nuevaPersona.estadoId" name="estadoId" required>
+    <option *ngFor="let estado of estados" [value]="estado.id">{{ estado.nombre }}</option>
+  </select>
+
+  <button type="submit">Crear Persona</button>
+</form>
+
+<hr>
+
+<h2>Lista de Personas</h2>
+<ul>
+  <li *ngFor="let persona of personas">
+    {{ persona.nombre }} {{ persona.apellido }} - {{ persona.pais.nombre }} - {{ persona.estado.nombre }}
+  </li>
+</ul>
