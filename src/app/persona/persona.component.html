@@ -1,31 +1,37 @@
 <h2>Crear Nueva Persona</h2>
-<form (ngSubmit)="crearPersona()">
+<div>
   <label for="nombre">Nombre:</label>
-  <input type="text" id="nombre" [(ngModel)]="nuevaPersona.nombre" name="nombre" required>
+  <input type="text" [(ngModel)]="nombre" id="nombre" />
 
   <label for="apellido">Apellido:</label>
-  <input type="text" id="apellido" [(ngModel)]="nuevaPersona.apellido" name="apellido" required>
+  <input type="text" [(ngModel)]="apellido" id="apellido" />
 
-  <!-- Select para País -->
   <label for="pais">País:</label>
-  <select id="pais" [(ngModel)]="nuevaPersona.paisId" name="paisId" required>
+  <select [(ngModel)]="pais">
     <option *ngFor="let pais of paises" [value]="pais.id">{{ pais.nombre }}</option>
   </select>
 
-  <!-- Select para Estado -->
   <label for="estado">Estado:</label>
-  <select id="estado" [(ngModel)]="nuevaPersona.estadoId" name="estadoId" required>
+  <select [(ngModel)]="estado">
     <option *ngFor="let estado of estados" [value]="estado.id">{{ estado.nombre }}</option>
   </select>
 
-  <button type="submit">Crear Persona</button>
-</form>
+  <button (click)="crearPersona()">Crear Persona</button>
+</div>
 
-<hr>
+<hr />
 
 <h2>Lista de Personas</h2>
-<ul>
+<button (click)="cargarPersonas()">Cargar Personas</button>
+
+<ul *ngIf="personas.length > 0">
   <li *ngFor="let persona of personas">
-    {{ persona.nombre }} {{ persona.apellido }} - {{ persona.pais.nombre }} - {{ persona.estado.nombre }}
+    {{ persona?.nombre || 'Nombre no disponible' }} {{ persona?.apellido || '' }} 
+    - {{ persona?.pais?.nombre || '' }} 
+    - {{ persona?.estado?.nombre || '' }}
+    <button (click)="eliminarPersona(persona.id)">Eliminar</button>
   </li>
 </ul>
+
+
+<p *ngIf="personas.length === 0">No hay personas en la lista.</p>

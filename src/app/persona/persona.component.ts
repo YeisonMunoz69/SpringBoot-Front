@@ -1,49 +1,84 @@
 import { Component, OnInit } from '@angular/core';
-import { BackendService } from '../services/backend.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
+import { PersonaService } from '../persona/persona.service';  
+import { EstadoService } from '../estados/estado.service'; 
+import { PaisService } from '../paises/pais.service';  
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-persona',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './persona.component.html',
-  styleUrls: ['./persona.component.css']
+  styleUrls: ['./persona.component.css'],
+  imports: [CommonModule, FormsModule]
 })
+
 export class PersonaComponent implements OnInit {
-  personas: any[] = [];
-  paises: any[] = [];
-  estados: any[] = [];
+  nombre: string = '';
+  apellido: string = '';
+  pais: string = '';
+  estado: string = '';
+  personas: any[] = []; // Datos para ngFor
+  paises: any[] = []; // Lista de países
+  estados: any[] = []; // Lista de estados
 
-  nuevaPersona = { nombre: '', apellido: '', paisId: null, estadoId: null };  // Incluimos paisId y estadoId
+  constructor(private personaService: PersonaService) {}
 
-  constructor(private backendService: BackendService) {}
+  // Método para crear una nueva persona
+  crearPersona() {
+    const nuevaPersona = {
+      nombre: this.nombre,
+      apellido: this.apellido,
+      pais: this.pais,
+      estado: this.estado
+    };
 
-  ngOnInit(): void {
-    // Cargar personas, países y estados
-    this.backendService.getPersonas().subscribe(data => {
-      this.personas = data;
-    });
-
-    this.backendService.getPaises().subscribe(data => {
-      this.paises = data;
-    });
-
-    this.backendService.getEstados().subscribe(data => {
-      this.estados = data;
+    this.personaService.crearPersona(nuevaPersona).subscribe((persona) => {
+      this.personas.push(persona);
+      this.resetForm();
     });
   }
 
-  crearPersona(): void {
-    if (this.nuevaPersona.nombre && this.nuevaPersona.apellido && this.nuevaPersona.paisId && this.nuevaPersona.estadoId) {
-      this.backendService.createPersona(this.nuevaPersona).subscribe(() => {
-        // Recargar la lista de personas después de crear
-        this.backendService.getPersonas().subscribe(data => {
-          this.personas = data;
-        });
-        // Limpiar el formulario
-        this.nuevaPersona = { nombre: '', apellido: '', paisId: null, estadoId: null };
-      });
-    }
+  // Método para cargar todas las personas
+  cargarPersonas() {
+    this.personaService.obtenerPersonas().subscribe((data) => {
+      this.personas = data;
+    });
+  }
+
+  // Método para eliminar una persona
+  eliminarPersona(id: string) {
+    this.personaService.eliminarPersona(id).subscribe(() => {
+      this.personas = this.personas.filter(persona => persona.id !== id);
+    });
+  }
+
+  // Método para cargar los países y estados al inicio
+  ngOnInit() {
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    forkJoin({
+      estados: this.personaService.obtenerEstados(),
+      paises: this.personaService.obtenerPaises()
+    }).subscribe({
+      next: ({ estados, paises }) => {
+        this.estados = estados;
+        this.paises = paises;
+      },
+      error: (err) => {
+        console.error('Error al cargar los datos:', err);
+      }
+    });
+  }
+
+  // Resetear el formulario
+  resetForm() {
+    this.nombre = '';
+    this.apellido = '';
+    this.pais = '';
+    this.estado = '';
   }
 }
